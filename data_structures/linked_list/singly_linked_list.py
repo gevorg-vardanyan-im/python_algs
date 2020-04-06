@@ -51,6 +51,22 @@ class LinkedList:
                 temp.next, temp = None, temp.next
         return temp
 
+    def get(self, data):
+        """
+        Method finds and returns item and its position started from the head.
+        """
+        if not self.Head:
+            return None, None
+
+        current = self.Head
+        position = 0
+        while current.data != data and current.next:
+            current = current.next
+            position += 1
+        if current.data == data:
+            return current, position
+        return None, None
+
     def is_empty(self):
         return self.Head is None
 
@@ -103,16 +119,12 @@ def main():
     for _ in range(3):
         linked_list.delete_tail()
     linked_list.print_list()
-    # print("\nDelete Head")
-    # A.delete_head()
-    # print("Delete Tail")
-    # A.delete_tail()
-    # print("\nPrint List : ")
-    # A.print_list()
-    # print("\nReverse Linked List")
-    # A.reverse()
-    # print("\nPrint List : ")
-    # A.print_list()
+
+    print('\nFinding', random_list[0], 'element.')
+    node, position = linked_list.get(random_list[0])
+    if node:
+        print('Found {} at {} position from the head.'.
+              format(node.data, position))
 
 
 if __name__ == '__main__':
