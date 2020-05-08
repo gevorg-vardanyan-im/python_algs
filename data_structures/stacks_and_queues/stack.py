@@ -1,9 +1,9 @@
 class Stack(object):
-    """This class represents the stack."""
+    """ This class represents the stack. """
 
     def __init__(self, limit):
         self.limit = limit
-        self.stack = [None] * limit
+        self.entries = [None] * limit
         # this variable shows the last added item position in the stack
         self.last_position = -1
 
@@ -12,21 +12,21 @@ class Stack(object):
         if self.is_full():
             raise IndexError('___the stack is full___')
         self.last_position += 1
-        self.stack[self.last_position] = item
+        self.entries[self.last_position] = item
 
     def pop(self):
         """ Pop the top element and returns it. """
         if self.is_empty():
             raise IndexError('___the stack is empty___')
-        item = self.stack[self.last_position]
+        item = self.entries[self.last_position]
         self.last_position -= 1
         return item
 
-    def peak(self):
+    def peek(self):
         """ Peek at the top-most element of the stack. """
         if self.is_empty():
             raise IndexError('___the stack is empty___')
-        return self.stack[self.last_position]
+        return self.entries[self.last_position]
 
     def size(self):
         """ Return the size of the stack. """
@@ -58,7 +58,7 @@ if __name__ == '__main__':
     print("\nCurrent size:", stack.size())
     print("Max size:", stack.limit)
     print("Is stack empty:", stack.is_empty())
-    print("Top element:", stack.peak())
+    print("Top element:", stack.peek())
 
     for _ in random_list:
         print("pop <=", stack.pop())
