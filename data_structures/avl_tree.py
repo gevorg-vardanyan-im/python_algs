@@ -38,23 +38,37 @@ class AvlTree(object):
         self.__check_balance(node)
 
     def __check_balance(self, node):
-        if abs(self.height(node.left) - self.height(node.right)) > 1:
-            self.__rebalance(node)
-            if not node.parent:
-                return
-            self.__check_balance(node.parent)
+        left_sub_height = self.height(node.left)
+        right_sub_height = self.height(node.right)
+        if abs(left_sub_height - right_sub_height) > 1:
+            self.__rebalance(node, left_sub_height, right_sub_height)
+        if not node.parent:
+            return
+        self.__check_balance(node.parent)
 
-    def __rebalance(self, node):
-        if (self.height(node.left) - self.height(node.right)) > 1:
+    def __rebalance(self, node, left_sub_height, right_sub_height):
+        parent_node = node.parent
+        if (left_sub_height - right_sub_height) > 1:
+            # left subtree is bigger than the right subtree
             if self.height(node.left.left) > self.height(node.left.right):
                 node = self.right_rotation(node)
+                if parent_node is not None:
+                    parent_node.right = node
             else:
                 node = self.left_right_rotation(node)
+                if parent_node is not None:
+                    parent_node.left = node
         else:
-            if self.height(node.right.left) > self.height(node.right.right):
-                node = self.right_rotation(node)
+            # right subtree is bigger than the left subtree
+            if self.height(node.right.left) < self.height(node.right.right):
+                node = self.left_rotation(node)
+                if parent_node is not None:
+                    parent_node.left = node
             else:
-                node = self.left_right_rotation(node)
+                node = self.right_left_rotation(node)
+                if parent_node is not None:
+                    parent_node.right = node
+        node.parent = parent_node
         if not node.parent:
             self.root = node
 
@@ -89,14 +103,22 @@ class AvlTree(object):
     def left_rotation(node):
         tmp = node.right
         node.right = tmp.left
+        if tmp.left is not None:
+            tmp.left.parent = node
+
         tmp.left = node
+        node.parent = tmp
         return tmp
 
     @staticmethod
     def right_rotation(node):
         tmp = node.left
         node.left = tmp.right
+        if tmp.right is not None:
+            tmp.right.parent = node
+
         tmp.right = node
+        node.parent = tmp
         return tmp
 
     def add(self, val):
@@ -109,11 +131,12 @@ class AvlTree(object):
 
     def left_right_rotation(self, node):
         """
-        node is thr grandparent node
+        node is the grandparent node
         left rotation should be around parent
         right rotation should be around grandparent
         """
         node.left = self.left_rotation(node.left)
+        node.left.parent = node
         return self.right_rotation(node)
 
     def right_left_rotation(self, node):
@@ -123,6 +146,7 @@ class AvlTree(object):
         left rotation should be around grandparent
         """
         node.right = self.right_rotation(node.right)
+        node.right.parent = node
         return self.left_rotation(node)
 
     def height(self, node):
@@ -132,10 +156,12 @@ class AvlTree(object):
         right_height = self.height(node.right) + 1
         return max(left_height, right_height)
 
-    def print_level_order(self):
-        for i in range(1, self.__height() + 2):
-            self.print_given_level(self.root, i)
-            print()
+    def level_order_traverse(self):
+        if self.root.val:
+            print('\n---------- level order traverse ----------')
+            for i in range(1, self.__height() + 2):
+                self.print_given_level(self.root, i)
+                print()
 
     def print_given_level(self, root, level):
         if root is None:
@@ -148,19 +174,26 @@ class AvlTree(object):
 
     def in_order_traverse(self):
         if self.root.val:
-            print('---------- in order traverse ----------')
+            print('\n---------- in order traverse ----------')
             self.__in_order_traverse(self.root)
 
 
 if __name__ == '__main__':
-    # import random
-    # random_list = list(range(20))
-    # random.shuffle(random_list)
-    random_list = [5, 8, 6, 4, 2, 9, 7, 1, 3, 0, 20, 15, 25, 24, 23, 22, 30, 12]
+    # the elements below will involve all 4 rotations
     tree = AvlTree()
-    print(random_list)
-    for i in random_list:
-        tree.add(i)
-    print('size:', tree.size)
-    tree.print_level_order()
+
+    tree.add(43)
+    tree.add(18)
+    tree.add(22)  # left_right rotation on 43
+    tree.add(9)
+    tree.add(21)
+    tree.add(6)  # right rotation on 22 around 18
+    tree.add(8)  # left_right rotation on 9
+    tree.add(20)
+    tree.add(63)
+    tree.add(50)  # right_left_rotation on 43
+    tree.add(62)  # left rotation on 18 around 22
+    tree.add(51)  # right_rotation on 63
+
     tree.in_order_traverse()
+    tree.level_order_traverse()
