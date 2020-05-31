@@ -75,6 +75,53 @@ class AvlTree(object):
     def __height(self):
         return int(self.log2(self.size))
 
+    def __predecessor(self, node):
+        return self.get_max(node.left)
+
+    def __get_nodes_as_list(self):
+        elements = [self.root]
+        start = 0
+        end = len(elements)
+        counter = 0
+        while counter < self.size:
+            for i in range(start, len(elements)):
+                left = None
+                right = None
+                if elements[i]:
+                    counter += 1
+                    left = elements[i].left
+                    right = elements[i].right
+                elements.append(left)
+                elements.append(right)
+            start = end
+            end = len(elements)
+            counter += 1
+        return self.__generate_values_list(elements)
+
+    def __remove_node_with_two_children(self, node, target_val):
+        """
+        We swap the target element value with its predecessor's value.
+        At this point we need to remove the target element's predecessor
+        but because we have swapped the values and by which have created the
+        violation we cannot rely on the get() method to get the node by val
+        due to it works with a tree with no violation.
+        Thus need to detect the corresponding removal method here
+        considering that the predecessor does not have right leaf.
+        """
+        predecessor = self.__predecessor(node)
+        print(f'predecessor: {predecessor.val}')
+        if predecessor.parent is node:
+            node.val = node.left.val
+            # node.left.val = target_val
+            node.left = node.left.left
+            return
+        node.val = predecessor.val
+        predecessor.val = target_val
+        if not predecessor.left:
+            self.__remove_node_with_no_child(predecessor)
+        else:
+            self.__remove_predecessor_with_child(predecessor)
+
     def __in_order_traverse(self, node):
         if node.left:
             self.__in_order_traverse(node.left)
@@ -98,6 +145,45 @@ class AvlTree(object):
 
         if node.right:
             self.__in_order_traverse(node.right)
+
+    @staticmethod
+    def __generate_values_list(elements):
+        """ docstring for __generate_elements_list """
+        for key, val in enumerate(elements):
+            if val:
+                # print(f'key, val: {key, val.val}')
+                elements[key] = val.val
+            else:
+                # print(f'key, val: {key, "____"}')
+                elements[key] = '____'
+        return elements
+
+    @staticmethod
+    def __remove_node_with_no_child(node):
+        print('__remove_node_with_no_child')
+        if node.val > node.parent.val:
+            node.parent.right = None
+        else:
+            node.parent.left = None
+        print('node.parent', node.parent.val)
+        print('node.parent.left', node.parent.left)
+
+    @staticmethod
+    def __remove_node_with_one_child(node):
+        print('__remove_node_with_one_child')
+        last_node = node.left if node.left else node.right
+        if node.val > node.parent.val:
+            node.parent.right = last_node
+        else:
+            node.parent.left = last_node
+        last_node.parent = node.parent
+
+    @staticmethod
+    def __remove_predecessor_with_child(node):
+        print('__remove_predecessor_with_child')
+        last_node = node.left
+        node.parent.left = last_node
+        last_node.parent = node.parent
 
     @staticmethod
     def left_rotation(node):
@@ -156,6 +242,73 @@ class AvlTree(object):
         right_height = self.height(node.right) + 1
         return max(left_height, right_height)
 
+    def get(self, val):
+        current = self.root
+        while current:
+            if val == current.val:
+                return current
+            if val > current.val:
+                # we go to the right
+                if current.right:
+                    current = current.right
+                else:
+                    return None
+            else:
+                # we go to the left
+                if current.left:
+                    current = current.left
+                else:
+                    return None
+        else:
+            return None
+
+    def get_min(self, node=None):
+        if not node:
+            node = self.root
+        if node:
+            while node:
+                if not node.left:
+                    break
+                node = node.left
+            return node
+        else:
+            return None
+
+    def get_max(self, node=None):
+        if not node:
+            node = self.root
+        if node:
+            while node:
+                if not node.right:
+                    break
+                node = node.right
+            return node
+        else:
+            return None
+
+    def remove(self, node_val):
+        node = self.get(node_val)
+        if not node:
+            return
+        rebalancing_node = self.get_min()
+        if rebalancing_node == node:
+            print('node is min element')
+            rebalancing_node = self.get_max()
+        print('rebalancing_node', rebalancing_node.val)
+
+        if not node.left and not node.right:
+            # remove leaf node
+            self.__remove_node_with_no_child(node)
+        elif node.left and node.right:
+            # remove node with 2 children
+            self.__remove_node_with_two_children(node, node_val)
+        else:
+            # remove node with 1 child
+            self.__remove_node_with_one_child(node)
+        self.size -= 1
+
+        self.__check_balance(rebalancing_node)
+
     def level_order_traverse(self):
         if self.root.val:
             print('\n---------- level order traverse ----------')
@@ -195,5 +348,10 @@ if __name__ == '__main__':
     tree.add(62)  # left rotation on 18 around 22
     tree.add(51)  # right_rotation on 63
 
-    tree.in_order_traverse()
     tree.level_order_traverse()
+    tree.in_order_traverse()
+
+    print("\nMinimum value is", tree.get_min().val)
+    print("Maximum value is", tree.get_max().val)
+
+    print("Get node with value 21:", tree.get(21))

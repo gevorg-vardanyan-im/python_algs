@@ -98,21 +98,21 @@ class Tree(object):
             self.__in_order_traverse(node.left)
 
         if node.val < self.root.val:
-            print("on root left    > ", node.val, end="")
+            print("on root left    >  ", node.val, end="")
             if node.parent:
-                print('  parent > {}'.format(node.parent.val))
+                print('    parent  >  {}'.format(node.parent.val))
             else:
                 print()
         elif node.val > self.root.val:
-            print("on root right   < ", node.val, end="")
+            print("on root right   <  ", node.val, end="")
             if node.parent:
-                print('  parent > {}'.format(node.parent.val))
+                print('    parent  >  {}'.format(node.parent.val))
             else:
                 print()
         else:
             # we allow an elements' duplication
             # see insert() method
-            print("root element(s) _ ", node.val)
+            print("root element(s) _  ", node.val)
 
         if node.right:
             self.__in_order_traverse(node.right)
@@ -231,52 +231,6 @@ class Tree(object):
     def get_max(self):
         return self.__get_max()
 
-    def height(self):
-        return int(self.log2(self.count))
-
-    def in_order_traverse(self):
-        if self.root.val:
-            print('---------- in order traverse ----------')
-            self.__in_order_traverse(self.root)
-
-    def level_order_traverse(self):
-        """
-        This method prints all elements in the level including None elements.
-        """
-        if self.root.val:
-            print('---------- level order traverse ----------')
-            nodes_list = self.__get_nodes_as_list()
-            height = int(self.log2(len(nodes_list))) + 1
-            # min_len = 7  # 4 chars for item and 3 char for separation
-            # max_len = 2**(height - 1) * 7
-            for i in range(1, height + 1):
-                # print(f'{i}-th level elements count: {2**(i-1)}', end='   ')
-                # print(f'range: {2**(i-1) - 1}, {2**(i) - 2}')
-                for j in range(2**(i-1) - 1, 2**i - 1):
-                    level_separator = '  '
-                    # level_separator = '  ' * int((max_len / (2**(i-1) + 1)))
-                    tmp = [' ', ' ', ' ', ' ']
-                    item = list(str(nodes_list[j]))
-                    tmp[0:len(item)] = item
-                    print(level_separator, ''.join(tmp), end='')
-                print()
-
-    def print_level_order(self):
-        """ This method prints only elements in the level. """
-        print('---------- elements in level ----------')
-        for i in range(1, self.height() + 2):
-            self.print_given_level(self.root, i)
-            print()
-
-    def print_given_level(self, root, level):
-        if root is None:
-            return root
-        if level == 1:
-            print(root.val, end='   ')
-        elif level > 1:
-            self.print_given_level(root.left, level - 1)
-            self.print_given_level(root.right, level - 1)
-
     def remove(self, node_val):
         node = self.get(node_val)
         if not node:
@@ -293,12 +247,30 @@ class Tree(object):
             self.__remove_node_with_one_child(node)
         self.count -= 1
 
+    def height(self):
+        return int(self.log2(self.count))
+
+    def in_order_traverse(self):
+        if self.root.val:
+            print('---------- in order traverse ----------')
+            self.__in_order_traverse(self.root)
+
+    def print_given_level(self, root, level):
+        if root is None:
+            return root
+        if level == 1:
+            print(root.val, end='   ')
+        elif level > 1:
+            self.print_given_level(root.left, level - 1)
+            self.print_given_level(root.right, level - 1)
+
 
 if __name__ == '__main__':
-    import random
-    random_list = list(range(10))
-    random.shuffle(random_list)
+    # import random
+    # random_list = list(range(10))
+    # random.shuffle(random_list)
     tree = Tree()
+    random_list = [4, 0, 8, 1, 7, 6, 9, 2, 5, 3]
     print(random_list)
     for i in random_list:
         tree.add(i)
@@ -309,4 +281,3 @@ if __name__ == '__main__':
     print("count:", tree.count)
     print("height:", tree.height())
     tree.in_order_traverse()
-    tree.level_order_traverse()
