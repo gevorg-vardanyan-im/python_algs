@@ -1,7 +1,3 @@
-import sys
-import os
-
-
 class Hashmap(object):
     """ Class Hashmap implemented with the list. """
 
@@ -16,10 +12,10 @@ class Hashmap(object):
             hash += ord(i)
         return hash % self.size
 
-    def add(self, key, value):
+    def set(self, key, value):
         """
         This function adds or updates
-        key-value pair into the hashmap
+        key-value pair into the hashmap.
         """
 
         key_hash = self._get_hash(key)
@@ -31,8 +27,8 @@ class Hashmap(object):
                 if item[0] == key:
                     item[1] = value
                     return True
-                self.map[key_hash].append(pair)
-                return True
+            self.map[key_hash].append(pair)
+            return True
 
     def get(self, key):
         """ This function returns an item by given key if it exists. """
@@ -50,29 +46,36 @@ class Hashmap(object):
             return False
         for item, val in enumerate(self.map[key_hash]):
             if self.map[key_hash][item][0] == key:
-                self.map[key_hash][item].pop(1)
+                self.map[key_hash].pop(item)
                 return True
 
     def traverse(self):
-        """ This function traverses and prints out the elements of the map. """
+        """ Traverse and print out the elements of the map. """
         for i in self.map:
             if i:
                 print(str(i))
 
 
 if __name__ == '__main__':
-    hamo = Hashmap()
-    print(hamo)
-    hamo.add('a', 2)
-    hamo.add('aa', 22)
-    hamo.add('va', 32)
-    hamo.add('av', 42)
-    hamo.traverse()
-    print()
-    hamo.delete('vav')
-    hamo.traverse()
-    print(hamo.get('aaa'))
-
-
-
-
+    hash_map = Hashmap()
+    # add some elements
+    hash_map.set('name', 'Gevorg')
+    hash_map.set('surname', 'Vardanyan')
+    hash_map.set('age', 27)
+    hash_map.set('deadlift', 70)
+    hash_map.set('squat', 75)
+    hash_map.set('bench', 40)
+    hash_map.set('pull_up', 12)
+    hash_map.set('push_up', 15)
+    hash_map.traverse()
+    print('----------------------------------------')
+    # remove some elements
+    hash_map.delete('bench')
+    hash_map.delete('squat')
+    hash_map.delete('deadlift')
+    hash_map.traverse()
+    print('----------------------------------------')
+    # update already added elements
+    hash_map.set('pull_up', 25)
+    hash_map.set('push_up', 30)
+    hash_map.traverse()
