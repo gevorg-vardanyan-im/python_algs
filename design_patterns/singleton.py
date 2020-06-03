@@ -1,5 +1,5 @@
 class Singleton(object):
-    """Singleton realisation via Python"""
+    """ Singleton implementation via Python. """
 
     _instance = None
 
