@@ -4,7 +4,7 @@ from design_patterns.Creational.Singleton.Logger.ProgramLogger\
 
 def main():
     """
-        In order to make sure that the further invoking of the ProgramLogger
+        In order to make sure that the further invocation of the ProgramLogger
         returns the same object, print the various instances of it.
         I.e.
             first_logger = ProgramLogger()
