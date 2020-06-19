@@ -1,6 +1,6 @@
 from design_patterns.Structural.Adapter.Database import Database
-from design_patterns.Structural.Adapter.PythonApplication\
-    import PythonApplication
+from design_patterns.Structural.Adapter.PythonApplication import \
+    PythonApplication
 
 
 class AdapterPythonToDatabase(PythonApplication, Database):

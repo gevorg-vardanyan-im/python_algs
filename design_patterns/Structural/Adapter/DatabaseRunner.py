@@ -1,4 +1,6 @@
-from design_patterns.Structural.Adapter.AdapterPythonToDatabase import AdapterPythonToDatabase
+from design_patterns.Structural.Adapter.AdapterPythonToDatabase import \
+    AdapterPythonToDatabase
+
 
 class DatabaseRunner():
     def run(self):

@@ -1,5 +1,5 @@
-from design_patterns.Creational.Singleton.Logger.ProgramLogger\
-    import ProgramLogger
+from design_patterns.Creational.Singleton.Logger.ProgramLogger import \
+    ProgramLogger
 
 
 def main():
