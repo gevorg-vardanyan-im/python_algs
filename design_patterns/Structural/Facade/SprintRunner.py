@@ -9,6 +9,7 @@ from design_patterns.Structural.Facade.Workflow import Workflow
 def main():
     workflow = Workflow()
     workflow.solve_problems()
+    workflow.take_rest()
 
 
 if __name__ == '__main__':

@@ -20,3 +20,7 @@ class Workflow(object):
         self.job.do_job()
         self.bug_tracker.start_sprint()
         self.developer.do_job_before_deadline(self.bug_tracker)
+
+    def take_rest(self):
+        self.bug_tracker.finish_sprint()
+        self.developer.do_job_before_deadline(self.bug_tracker)
